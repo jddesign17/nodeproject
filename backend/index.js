@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     phone_number:Number
 })
 
-const userModel = mongoose.model("user",userSchema)
+const userModel = mongoose.model("roll_no",userSchema)
 
 app.post("/register",async(req,res)=>{
     try {
@@ -26,6 +26,16 @@ app.post("/register",async(req,res)=>{
         res.send(user)
     } catch (error) {
         res.send(error)
+    }
+})
+
+
+app.get('/getuser',async(req,res)=>{
+    try {
+        const response = await userModel.find()
+        res.send(response)        
+    } catch (error) {
+            res.send(error)
     }
 })
 

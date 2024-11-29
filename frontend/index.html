@@ -13,6 +13,41 @@
     <input type="number" id="age" placeholder="Enter age">
     <input type="number" id="phone_number" placeholder="Enter phone number">
     <button onclick="submit()">Submit</button>
+
+  
    </div>
+
+   <div id="details" style=" width: 100%;padding: 40px;">
+
+   </div>
+
+   <script>
+
+    const details = document.getElementById("details")
+        async function getUserDeatils(){
+                try {
+                    const response = await fetch("http://localhost:3000/getuser")
+                    const data =await  response.json()
+
+                    data.map((item,index)=>{
+                        details.innerHTML +=`
+                        <div style="background-color: white;width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr 1fr 1fr;padding:10px;gap:20px ">
+                            <h2>${item.username}</h2> 
+                        <p>${item.age}</p>
+                        <p>${item.phone_number}</p>
+                        <button onclick="deleteUser(${item._id})">Delete</button>
+                        <button onclick="deleteUser(${item._id})">Edit</button>
+                            </div>
+                        `
+                    })
+
+                    
+                } catch (error) {
+                    console.log(error)
+                }
+        }
+
+        getUserDeatils()
+   </script>
 </body>
 </html>

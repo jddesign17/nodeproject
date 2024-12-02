@@ -80,6 +80,7 @@ app.get("/getuser/:id", async (req, res) => {
     res.send(error);
   }
 });
+
 mongoose
   .connect(
     "mongodb+srv://surendar:1234@cluster0.rdcv1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"

@@ -30,8 +30,6 @@ app.post("/register", async (req, res) => {
   }
 });
 
-
-
 app.get("/getuser", async (req, res) => {
   try {
     const response = await userModel.find();

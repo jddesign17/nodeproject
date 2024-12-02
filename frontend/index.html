@@ -13,6 +13,7 @@
       <input type="number" id="age" placeholder="Enter age" />
       <input type="number" id="phone_number" placeholder="Enter phone number" />
       <button onclick="submit()">Submit</button>
+      <button onclick="update()">Update</button>
     </div>
 
     <div id="details" style="width: 100%; padding: 40px"></div>
@@ -20,7 +21,7 @@
     <script>
       const details = document.getElementById("details");
   
-
+        let userId = ""
     
 
       async function submit() {
@@ -93,15 +94,50 @@
                 })
                 
                 const data = await resposne.json()
+               
 
                 document.getElementById("username").value  = data.username
                 document.getElementById("age").value  = data.age
                 document.getElementById("phone_number").value  = data.phone_number
+                userId=data._id
                 
             } catch (error) {
                 console.log(error)
             }
       }
+
+
+      async function update()
+      {
+
+        const username = document.getElementById("username").value;
+        const age = document.getElementById("age").value;
+        const phone_number = document.getElementById("phone_number").value;
+
+
+            try {
+                const resposne = await fetch( `http://localhost:3000/update/${userId}`,{
+                    method:"PUT",
+                    body:JSON.stringify({
+                        name:username,
+                        age:age,
+                        phone_number:phone_number
+
+                    }),
+
+                    headers:{
+                        "Content-Type":"application/json"
+                    }
+                })
+                console.log(resposne.json())
+
+                alert("user updated successfully")
+                window.location.reload()
+                
+            } catch (error) {
+                alert(error)
+            }
+      }     
     </script>
   </body>
 </html>

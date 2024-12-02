@@ -1,36 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-   <div class="container">
-    <h2>Registration Form</h2>
-    <input type="text" id="username" placeholder="Enter username">
-    <input type="number" id="age" placeholder="Enter age">
-    <input type="number" id="phone_number" placeholder="Enter phone number">
-    <button onclick="submit()">Submit</button>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Registration Form</h2>
+      <input type="text" id="username" placeholder="Enter username" />
+      <input type="number" id="age" placeholder="Enter age" />
+      <input type="number" id="phone_number" placeholder="Enter phone number" />
+      <button onclick="submit()">Submit</button>
+    </div>
 
-  
-   </div>
+    <div id="details" style="width: 100%; padding: 40px"></div>
 
-   <div id="details" style=" width: 100%;padding: 40px;">
+    <script>
+      4;
 
-   </div>
+      const details = document.getElementById("details");
 
-   <script>
+      async function submit() {
+        const username = document.getElementById("username").value;
+        const age = document.getElementById("age").value;
+        const phone_number = document.getElementById("phone_number").value;
 
-    const details = document.getElementById("details")
-        async function getUserDeatils(){
-                try {
-                    const response = await fetch("http://localhost:3000/getuser")
-                    const data =await  response.json()
+        try {
+          const resposne = await fetch("http://localhost:3000/register", {
+            method: "POST",
+            body: JSON.stringify({
+              name: username,
+              age: age,
+              phone_number: phone_number,
+            }),
 
-                    data.map((item,index)=>{
-                        details.innerHTML +=`
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          console.log(resposne.json())
+        } catch (error) {
+            console.log(error)
+        }
+      }
+      async function getUserDeatils() {
+        try {
+          const response = await fetch("http://localhost:3000/getuser");
+          const data = await response.json();
+
+          data.map((item, index) => {
+            details.innerHTML += `
                         <div style="background-color: white;width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr 1fr 1fr;padding:10px;gap:20px ">
                             <h2>${item.username}</h2> 
                         <p>${item.age}</p>
@@ -38,16 +59,14 @@
                         <button onclick="deleteUser(${item._id})">Delete</button>
                         <button onclick="deleteUser(${item._id})">Edit</button>
                             </div>
-                        `
-                    })
-
-                    
-                } catch (error) {
-                    console.log(error)
-                }
+                        `;
+          });
+        } catch (error) {
+          console.log(error);
         }
+      }
 
-        getUserDeatils()
-   </script>
-</body>
+      getUserDeatils();
+    </script>
+  </body>
 </html>

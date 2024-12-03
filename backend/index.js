@@ -2,8 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
+const upload = require("./middleware/multer")
 
-
+app.use(express.static("uploads"));
 app.use(express.json());
 app.use(cors());
 
@@ -11,17 +12,21 @@ const userSchema = new mongoose.Schema({
   username: String,
   age: Number,
   phone_number: Number,
+  image:String
+
 });
 
 const userModel = mongoose.model("user", userSchema);
 
-app.post("/register", async (req, res) => {
+app.post("/register",upload.single("image"),async (req, res) => {
   try {
     const { name, age, phone_number } = req.body;
+
     const user = await userModel.create({
       username: name,
       age: age,
       phone_number: phone_number,
+      image:req.file.filename
     });
     await user.save();
     res.send(user);

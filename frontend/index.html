@@ -12,6 +12,7 @@
       <input type="text" id="username" placeholder="Enter username" />
       <input type="number" id="age" placeholder="Enter age" />
       <input type="number" id="phone_number" placeholder="Enter phone number" />
+      <input type="file"  id="image" name="image" accept="image/*" />
       <button onclick="submit()">Submit</button>
       <button onclick="update()">Update</button>
     </div>
@@ -20,30 +21,29 @@
 
     <script>
       const details = document.getElementById("details");
-  
-        let userId = ""
-    
+
+      let userId = "";
 
       async function submit() {
         const username = document.getElementById("username").value;
         const age = document.getElementById("age").value;
         const phone_number = document.getElementById("phone_number").value;
+        const image = document.getElementById("image").files[0]
+
+
+        const formdata = new FormData()
+        formdata.append("name",username)
+        formdata.append("age",age)
+        formdata.append("phone_number",phone_number)
+        formdata.append("image",image)
 
         try {
           const resposne = await fetch("http://localhost:3000/register", {
             method: "POST",
-            body: JSON.stringify({
-              name: username,
-              age: age,
-              phone_number: phone_number,
-            }),
-
-            headers: {
-              "Content-Type": "application/json",
-            },
+            body: formdata
           });
           alert("User Added Successfully");
-          window.location.reload()
+          window.location.reload();
         } catch (error) {
           console.log(error);
         }
@@ -55,11 +55,14 @@
 
           data.map((item, index) => {
             details.innerHTML += `
-                        <div style="background-color: white;width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr 1fr 1fr;padding:10px;gap:20px ">
-                            <h2>${item.username}</h2> 
+                        <div style="background-color: white;width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;padding:10px;gap:20px;align-items:center ">
+                                                   <img src="http://localhost:3000/${item.image}" alt="" style="width:50px;height:50px;borderradius:50%;object-fit:cover">
+
+                          
+                          <h2>${item.username}</h2> 
                         <p>${item.age}</p>
                         <p>${item.phone_number}</p>
-                                                <button onclick="editUser('${item._id}')" style="background-color:blue;width:fit-content;padding:10px 20px;border-radius:10px">Edit</button>
+                        <button onclick="editUser('${item._id}')" style="background-color:blue;width:fit-content;padding:10px 20px;border-radius:10px">Edit</button>
 
                         <button onclick="deleteUser('${item._id}')" style="background-color:red;width:fit-content;padding:10px 20px;border-radius:10px">Delete</button>
                             </div>
@@ -72,72 +75,64 @@
 
       getUserDeatils();
 
-      async function deleteUser(id)
-      {
-            try {
-                const resposne = await fetch(`http://localhost:3000/delete/${id}`,{
-                    method:"DELETE",    
-                })
-                alert("user deleted successfully")
-                window.location.reload()
-            } catch (error) {
-                alert(error)
-            }
+      async function deleteUser(id) {
+        try {
+          const resposne = await fetch(`http://localhost:3000/delete/${id}`, {
+            method: "DELETE",
+          });
+          alert("user deleted successfully");
+          window.location.reload();
+        } catch (error) {
+          alert(error);
+        }
       }
 
-     async function editUser(id)
-      {
-            try {
+      async function editUser(id) {
+        try {
+          const resposne = await fetch(`http://localhost:3000/getuser/${id}`, {
+            method: "GET",
+          });
 
-                const resposne = await fetch(`http://localhost:3000/getuser/${id}`,{
-                    method:"GET"
-                })
-                
-                const data = await resposne.json()
-               
+          const data = await resposne.json();
 
-                document.getElementById("username").value  = data.username
-                document.getElementById("age").value  = data.age
-                document.getElementById("phone_number").value  = data.phone_number
-                userId=data._id
-                
-            } catch (error) {
-                console.log(error)
-            }
+          document.getElementById("username").value = data.username;
+          document.getElementById("age").value = data.age;
+          document.getElementById("phone_number").value = data.phone_number;
+          userId = data._id;
+        } catch (error) {
+          console.log(error);
+        }
       }
 
-
-      async function update()
-      {
-
+      async function update() {
         const username = document.getElementById("username").value;
         const age = document.getElementById("age").value;
         const phone_number = document.getElementById("phone_number").value;
 
+        try {
+          const resposne = await fetch(
+            `http://localhost:3000/update/${userId}`,
+            {
+              method: "PUT",
+              body: JSON.stringify({
+                name: username,
+                age: age,
+                phone_number: phone_number,
+              }),
 
-            try {
-                const resposne = await fetch( `http://localhost:3000/update/${userId}`,{
-                    method:"PUT",
-                    body:JSON.stringify({
-                        name:username,
-                        age:age,
-                        phone_number:phone_number
-
-                    }),
-
-                    headers:{
-                        "Content-Type":"application/json"
-                    }
-                })
-                console.log(resposne.json())
-
-                alert("user updated successfully")
-                window.location.reload()
-                
-            } catch (error) {
-                alert(error)
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
-      }     
+          );
+          console.log(resposne.json());
+
+          alert("user updated successfully");
+          window.location.reload();
+        } catch (error) {
+          alert(error);
+        }
+      }
     </script>
   </body>
 </html>
